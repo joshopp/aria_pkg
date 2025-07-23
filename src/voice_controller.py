@@ -94,8 +94,7 @@ def stream_audio(context):
 
     # 6. save data/word list
     print("Saving word list to CSV file...")
-    # csv_folder = "/home/joshy/Bachelorthesis/aria_ws/src/aria2_pkg/data/audio" # Laptop
-    csv_folder = "/home/jruopp/Bachelorthesis/data/audio" # Lab
+    csv_folder = "/home/jruopp/thesis_ws/src/aria_pkg/data/audio" # Lab
     if not os.path.exists(csv_folder):
         os.makedirs(csv_folder)
     csv_filepath = os.path.join(csv_folder, 'word_list.csv')

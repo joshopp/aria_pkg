@@ -18,8 +18,7 @@ from projectaria_tools.core.stream_id import StreamId
 
 def eyetracking_initialization(device):
     # short example provider to calibrate cameras 
-    # provider = data_provider.create_vrs_data_provider("/home/joshy/Bachelorthesis/aria_ws/src/aria2_pkg/data/vrs/testEmma.vrs")  # calibration data, to get the transformmatrix. CAD inframaation are saved in vrs
-    provider = data_provider.create_vrs_data_provider("/home/jruopp/Bachelorthesis/data/vrs/testEmma.vrs") 
+    provider = data_provider.create_vrs_data_provider("/home/jruopp/thesis_ws/src/aria_pkg/data/vrs/testEmma.vrs") 
     # Calibrate ES, RGB, SLAM
     eye_stream_id = StreamId("211-1")
     rgb_stream_id = StreamId("214-1")

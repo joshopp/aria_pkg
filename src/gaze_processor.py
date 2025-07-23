@@ -100,8 +100,7 @@ def control_command_listener(context):
 
 
 def stream_image(context):
-    # save_path = "/home/joshy/Bachelorthesis/aria_ws/src/aria2_pkg/data" # path for laptop
-    save_path = "/home/jruopp/Bachelorthesis/data" # path for Lab
+    save_path = "/home/jruopp/thesis_ws/src/aria_pkg/data" # path for Lab
     camera_id_map = {2: "rgbcam", 3: "eyetrack"} # TODO: brauche ich alle?
 
     eyetrack_folder = os.path.join(save_path, "eyetracking")

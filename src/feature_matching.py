@@ -11,7 +11,7 @@ from ultralytics import YOLO
 import zmq
 
 #import SuperGlue from local
-superglue_path = "/home/jruopp/aria_ws/src/superglue_pkg/SuperGluePretrainedNetwork/"
+superglue_path = "/home/jruopp/thesis_ws/src/superglue_pkg/SuperGluePretrainedNetwork/"
 if superglue_path not in sys.path:
     sys.path.append(superglue_path)
 from models.matching import Matching
@@ -122,7 +122,7 @@ def get_robo_img_bbox(context, maskModel):
     img_bytes = socket.recv()
     nparr = np.frombuffer(img_bytes, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)  # BGR format
-    # img = cv2.imread('/home/jruopp/Bachelorthesis/data/superglue/sent_img2.png')
+    # img = cv2.imread('/home/jruopp/thesis_ws/src/aria_pkg/data/superglue/sent_img2.png')
     if img is not None:
         print(f"Received image from robot")
 
@@ -176,7 +176,7 @@ def get_aria_img_bbox(context, maskModel, et_csv_file_path, rgb_csv_file_path):
     gaze_points = et_data[['gaze_point_x', 'gaze_point_y']].to_numpy()
     # print(f"filename {filename}, gaze_points: {gaze_points}")
     # open RGB img from first timestamp and convert to grayscale
-    path = "/home/jruopp/Bachelorthesis/data/undistorted_imgs/"
+    path = "/home/jruopp/thesis_ws/src/aria_pkg/data/undistorted_imgs/"
     file = path+filename
 
     img = np.load(file)
@@ -253,7 +253,7 @@ def find_most_focused_bbox(gaze_points, result_boxes):
 
     for gaze_point in gaze_points:
         focused = find_focused_bbox(gaze_point, result_boxes)
-        print(f"Focused bbox: {focused}")
+        # print(f"Focused bbox: {focused}")
         if focused:
             key = focused["bbox_index"]
             focus_counter[key] += 1
@@ -290,7 +290,7 @@ def find_focused_bbox(gaze_point, result_boxes):
         center_x = (x1 + x2) / 2
         center_y = (y1 + y2) / 2
         distance = math.hypot(center_x - x, center_y - y)
-        print(f"Distance to bbox {i}: {distance}")
+        # print(f"Distance to bbox {i}: {distance}")
         i += 1
         if distance < min_dist and distance < 150:  # filter out if no box is focused
             min_dist = distance
@@ -335,11 +335,10 @@ def publish_bbox(context, bbox):
 
 
 def match_features(context):
-    maskModel = YOLO('/home/jruopp/Bachelorthesis/src/best.pt')
-    et_csv_file_path = '/home/jruopp/Bachelorthesis/data/eyetracking/general_eye_gaze.csv' 
-    rgb_csv_file_path = '/home/jruopp/Bachelorthesis/data/rgbcam/data.csv' 
-    
-    viz_path = '/home/jruopp/Bachelorthesis/data/superglue/matchresult.png'
+    maskModel = YOLO('/home/jruopp/thesis_ws/src/aria_pkg//src/best.pt')
+    et_csv_file_path = '/home/jruopp/thesis_ws/src/aria_pkg/data/eyetracking/general_eye_gaze.csv' 
+    rgb_csv_file_path = '/home/jruopp/thesis_ws/src/aria_pkg/data/rgbcam/data.csv' 
+    viz_path = '/home/jruopp/thesis_ws/src/aria_pkg/data/superglue/matchresult.png'
 
     # 1. Initialize SuperGlue
     print("Initializing SuperGlue")
@@ -364,8 +363,8 @@ def match_features(context):
     # example: Coordinates: [496.7156066894531, 66.25860595703125, 550.5313110351562, 96.8639144897461]
 
 
-context = zmq.Context()
-match_features(context)
+# context = zmq.Context()
+# match_features(context)
 
 # {
 #   "words": [
