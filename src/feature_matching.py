@@ -306,21 +306,25 @@ def find_focused_bbox(gaze_point, result_boxes):
 
 
 
-def publish_bbox(context, bbox):
+def publish_bbox(context, bbox, image_shape):
     # extract most important values from bbox into dictionary
     bbox_tensor = bbox.xyxy[0]  # Bbbox coordinates as tensor
     x1, y1, x2, y2 = bbox_tensor.tolist()
+    center_x = (x1 + x2) / 2
+    center_y = (y1 + y2) / 2
+    height, width = image_shape[:2]
+    flipped_center = (width - center_x, height - center_y)
     bbox_dict = {
         "confidence": bbox.conf[0],
         "class": bbox.cls[0],
         "coordinates": (x1, y1, x2, y2),
-        "center": ((x1 + x2) / 2, (y1 + y2) / 2),
+        "center": flipped_center,
         }
 
     socket = context.socket(zmq.REQ)
-    socket.connect("tcp://10.159.6.33:5558") #IP of Panda3 PC
+    socket.connect("tcp://10.159.6.33:5559") #IP of Panda3 PC
     print("ZMQ socket connected to Panda3 PC")
-
+    
     # send bbox center to Panda3 PC
     socket.send_json(bbox_dict['center'])
     print("Bounding Box to grab sent to Panda3 PC...")
@@ -359,12 +363,12 @@ def match_features(context):
     print(f"Matched bounding box index: {matched_bbox} with {points_per_bbox} points.")
 
     # 4. publish the Bbox to Panda3 PC for grasping
-    publish_bbox(context, targeted_bbox)
+    publish_bbox(context, targeted_bbox, robo_img.shape)
     # example: Coordinates: [496.7156066894531, 66.25860595703125, 550.5313110351562, 96.8639144897461]
 
 
-# context = zmq.Context()
-# match_features(context)
+context = zmq.Context()
+match_features(context)
 
 # {
 #   "words": [

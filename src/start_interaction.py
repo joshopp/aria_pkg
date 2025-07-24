@@ -5,7 +5,7 @@ from aria_utils import AriaStreamer
 from common import update_iptables
 from gaze_processor import stream_image
 from voice_controller import stream_audio
-from feature_matching import match_features
+# from feature_matching import match_features
 import threading
 import zmq
 
@@ -59,15 +59,18 @@ def main():
     
     img_threat.start()
     audio_thread.start()
-
-    matcher_threat = threading.Thread(target=match_features, args=(context,))
-    matcher_threat.start()
-
     img_threat.join()
+    print("Image streaming thread finished.")
+
+    # matcher_threat = threading.Thread(target=match_features, args=(context,))
+    # matcher_threat.start()
+
     audio_thread.join()
+    print("Audio streaming thread finished.")
     aria.stream_end(device)
 
-    matcher_threat.join()
+    # matcher_threat.join()
+    print("Feature matching thread finished.")
     context.destroy()
 
 if __name__ == "__main__":
