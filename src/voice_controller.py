@@ -15,12 +15,13 @@ from aria_utils import AriaStreamer
 
 
 
-def stream_audio(context):
+def stream_audio():
     # 1. load whisper model
     model = WhisperModel("base", device="auto", compute_type="int8")  # "int8" ist schnell auf CPU/GPU
     # model = WhisperModel("medium.en", device="cpu", compute_type="int8") # medium.en
 
     # 2. bind/connect 0mq sockets
+    context = zmq.Context()
     command_socket = context.socket(zmq.PUB)
     command_socket.bind("tcp://*:5556")
     print("ZMQ bound to port 5556: publishing commands")
@@ -29,7 +30,7 @@ def stream_audio(context):
     print("ZMW connected to Avalon1: Requesting GPT inference")
     llm_pub_socket = context.socket(zmq.PUSH)
     llm_pub_socket.connect("tcp://localhost:5557")
-    print("ZMQ connected to port 555: pushing inference result")
+    print("ZMQ connected to port 5557: pushing inference result")
 
      # 3. create audio streamer and subscribe to desired data channels
     audio_streamer = AriaStreamer()

@@ -338,11 +338,12 @@ def publish_bbox(context, bbox, image_shape):
     socket.close()
 
 
-def match_features(context):
+def match_features():
     maskModel = YOLO('/home/jruopp/thesis_ws/src/aria_pkg//src/best.pt')
     et_csv_file_path = '/home/jruopp/thesis_ws/src/aria_pkg/data/eyetracking/general_eye_gaze.csv' 
     rgb_csv_file_path = '/home/jruopp/thesis_ws/src/aria_pkg/data/rgbcam/data.csv' 
     viz_path = '/home/jruopp/thesis_ws/src/aria_pkg/data/superglue/matchresult.png'
+    context = zmq.Context()
 
     # 1. Initialize SuperGlue
     print("Initializing SuperGlue")
@@ -367,8 +368,8 @@ def match_features(context):
     # example: Coordinates: [496.7156066894531, 66.25860595703125, 550.5313110351562, 96.8639144897461]
 
 
-context = zmq.Context()
-match_features(context)
+#context = zmq.Context()
+#match_features(context)
 
 # {
 #   "words": [

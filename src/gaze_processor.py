@@ -5,6 +5,7 @@ import os
 import shutil
 import threading
 import time
+import torch
 import zmq
 
 import aria.sdk as aria
@@ -66,11 +67,12 @@ def save_eye_gaze_result_to_csv(result, file_path):
         writer.writerow(result) 
 
 
-def control_command_listener(context):
+def control_command_listener():
     global saving_state
     saving_state = 0
     last_print_time = 0
     # connect to 0mq server to listen for "control" commands
+    context = zmq.Context()
     socket = context.socket(zmq.SUB)
     socket.connect("tcp://localhost:5556")
     socket.setsockopt_string(zmq.SUBSCRIBE, "command")  
@@ -99,7 +101,7 @@ def control_command_listener(context):
 
 
 
-def stream_image(context):
+def stream_image():
     save_path = "/home/jruopp/thesis_ws/src/aria_pkg/data" # path for Lab
     camera_id_map = {2: "rgbcam", 3: "eyetrack"} # TODO: brauche ich alle?
 
@@ -120,7 +122,7 @@ def stream_image(context):
     observer = img_streamer.stream_subscribe(data_channels, ImageObserver(rgb_camera_calibration, rgb_linear_camera_calibration, save_path, camera_id_map), message_size)
     
     # 3. listening thread for 0mq control msg
-    threading.Thread(target=control_command_listener, args=(context,), daemon=True).start()
+    threading.Thread(target=control_command_listener, daemon=True).start()
 
     # 4. start interaction model
     aria_window = "Meta Aria image"
@@ -161,3 +163,5 @@ def stream_image(context):
     img_streamer.streaming_client.unsubscribe()
     cv2.destroyAllWindows()
     print("Imaginary2 terminated, Image stream unsubscribed")   
+
+# stream_image()

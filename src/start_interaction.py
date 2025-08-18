@@ -5,9 +5,14 @@ from aria_utils import AriaStreamer
 from common import update_iptables
 from gaze_processor import stream_image
 from voice_controller import stream_audio
-# from feature_matching import match_features
-import threading
+from feature_matching import match_features
+import multiprocessing
 import zmq
+
+import torch
+import gc
+import os
+
 
 
 def parse_args() -> argparse.Namespace:
@@ -41,37 +46,39 @@ def parse_args() -> argparse.Namespace:
 
 
 
+
 def main():
     args = parse_args()
 
     if args.update_iptables and sys.platform.startswith("linux"):
         update_iptables()
-    
-    context = zmq.Context()
+
     # 1. Create AriaStreamer instance and start streaming
-    
     aria = AriaStreamer()
     device = aria.stream_start(args.device_ip, args.streaming_interface, args.profile_name)
-    
-    # 2. Start subscription and functions of image stream (imaginary2)
-    img_threat = threading.Thread(target=stream_image, args=(context,))
-    audio_thread = threading.Thread(target=stream_audio, args=(context,))
-    
-    img_threat.start()
-    audio_thread.start()
-    img_threat.join()
-    print("Image streaming thread finished.")
 
-    # matcher_threat = threading.Thread(target=match_features, args=(context,))
-    # matcher_threat.start()
+    # 2. Use multiprocessing to run the img stream, audio stream, and feature matching pipelines
+    ctx = multiprocessing.get_context("spawn")
+    img_proc = ctx.Process(target=stream_image)
+    audio_proc = ctx.Process(target=stream_audio)
+    matcher_proc = ctx.Process(target=match_features)
 
-    audio_thread.join()
-    print("Audio streaming thread finished.")
+    img_proc.start()
+    audio_proc.start()
+
+    img_proc.join()
+    print("Image streaming process finished.")
+
+    matcher_proc.start()
+
+    audio_proc.join()
+    print("Audio streaming process finished.")
+
     aria.stream_end(device)
 
-    # matcher_threat.join()
-    print("Feature matching thread finished.")
-    context.destroy()
+    matcher_proc.join()
+    print("Feature matching process finished.")
+
 
 if __name__ == "__main__":
     main()
