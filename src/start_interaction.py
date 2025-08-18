@@ -57,28 +57,31 @@ def main():
     aria = AriaStreamer()
     device = aria.stream_start(args.device_ip, args.streaming_interface, args.profile_name)
 
+    n = 0
     # 2. Use multiprocessing to run the img stream, audio stream, and feature matching pipelines
-    ctx = multiprocessing.get_context("spawn")
-    img_proc = ctx.Process(target=stream_image)
-    audio_proc = ctx.Process(target=stream_audio)
-    matcher_proc = ctx.Process(target=match_features)
+    while n<2:
+        print("Starting iteration..")
+        ctx = multiprocessing.get_context("spawn")
+        img_proc = ctx.Process(target=stream_image)
+        audio_proc = ctx.Process(target=stream_audio)
+        matcher_proc = ctx.Process(target=match_features)
 
-    img_proc.start()
-    audio_proc.start()
+        img_proc.start()
+        audio_proc.start()
 
-    img_proc.join()
-    print("Image streaming process finished.")
+        img_proc.join()
+        print("Image streaming process finished.")
 
-    matcher_proc.start()
+        matcher_proc.start()
 
-    audio_proc.join()
-    print("Audio streaming process finished.")
+        audio_proc.join()
+        print("Audio streaming process finished.")
+
+        matcher_proc.join()
+        print("Feature matching process finished.")
+        n += 1
 
     aria.stream_end(device)
-
-    matcher_proc.join()
-    print("Feature matching process finished.")
-
 
 if __name__ == "__main__":
     main()

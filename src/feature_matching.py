@@ -111,7 +111,7 @@ def calculate_matching_points_in_box(mkpts1, boxes):
 
 def get_robo_img_bbox(context, maskModel):
     socket = context.socket(zmq.REQ)
-    socket.connect("tcp://10.159.6.33:5555") #IP of Panda3 PC
+    socket.connect("tcp://10.159.6.33:5560") #IP of Panda3 PC
     print("ZMQ socket connected to Panda3 PC")
 
     # request image from IntelRealSense camera (roboter)
@@ -329,12 +329,12 @@ def publish_bbox(context, bbox, image_shape):
     socket.send_json(bbox_dict['center'])
     print("Bounding Box to grab sent to Panda3 PC...")
 
-    # receive answer, whether correct bbox was received
+    # receive answer, whether correct brick was grabbed
     success = socket.recv_json()
     if success:
-        print("Bounding Box successfully received by Panda3 PC")
+        print("Brick successfully grabbed by Panda")
     else:
-        print("Error: Bounding Box not received by Panda3 PC")
+        print("Error: Brick not grabbed by Panda")
     socket.close()
 
 
