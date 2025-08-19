@@ -4,6 +4,7 @@ from faster_whisper import WhisperModel
 import json
 import os
 import re
+import sys
 import zmq
 
 import aria.sdk as aria
@@ -11,7 +12,6 @@ import aria.sdk as aria
 import gpt_api
 from StreamingClientObserver import AudioObserver
 from aria_utils import AriaStreamer
-
 
 
 
@@ -70,7 +70,7 @@ def stream_audio():
                         start_time = word.start
                         save_flag = True
                         command = "command START"
-                    elif normalized_word == "finish": # end detected, end img interaction
+                    elif normalized_word == "finish" and save_flag: # end detected, end img interaction
                         print("FINISH DETECTED!\n")
                         quit_flag = True
                         save_flag = False
@@ -108,23 +108,40 @@ def stream_audio():
 
     # 7. process data and initialize GPT inference (LLama)
     question = gpt_api.combine_written_to_string(csv_filepath)
-    
     #send 0mq request to Avalon1 server
     avalon_socket.send_string(question)
     print("starting GPT inference: Question sent to Avalon1 server...")
-    response = avalon_socket.recv_string()
+    response = avalon_socket.recv_json()
 
-    if response is not None:
-        print(f"response received: \n<{response}\n")
-        json_output = json.loads(gpt_api.extract_python_code(response))
-        print(f"GPT_OUTPUT: \n{json_output}\n")
-        result_json = gpt_api.process_csv_and_find_timestamps(csv_filepath, question, json_output)
-        result_string = json.dumps(result_json, indent=2)
-        llm_pub_socket.send_string(result_string)
-        print(result_string)
-        print("results published to 0mq, ending GPT inference...")
+    # process tool call
+    tool_response = json.loads(response.get("tool"))
+    if tool_response is not None:
+        print(f"Tool response received: <{tool_response}\n")
+        tool_call = tool_response["function_name"][0]
+        print(f"Tool call: {tool_call}")
+        if tool_call == "grab_brick": 
+            pass
+        else:
+            # Publish to 0mq, when not grabbing a brick no intention alignment needed
+            tool_string = json.dumps(tool_response, indent=2)
+            llm_pub_socket.send_string(tool_string)
+            print(f"tool_call {tool_string}\n published to 0mq, ending GPT inference...")
+            sys.exit()
     else:
-        print("No response received from Avalon1 server, check if it is running")
+        print("No tool response received from Avalon1 server, check if it is running")
+
+    # process intention alignment
+    intent_response = response.get("intent")
+    if intent_response is not None:
+        json_output = json.loads(gpt_api.extract_python_code(intent_response))
+        print(f"Intent response received: {json_output}\n")
+        intent_json = gpt_api.process_csv_and_find_timestamps(csv_filepath, question, json_output)
+        tool_response["arguments"] = [intent_json]
+        tool_string = json.dumps(tool_response, indent=2)
+        llm_pub_socket.send_string(tool_string)
+        print(f"tool_call {tool_string} published to 0mq, ending GPT inference...")
+    else:
+        print("No intent response received from Avalon1 server, check if it is running")
 
     # close 0mq sockets
     avalon_socket.close()

@@ -1,11 +1,8 @@
-from openai import OpenAI
-import os
-import numpy as np
-import json
 import re
-import csv
 import string
 import pandas as pd
+
+
 
 def process_csv_and_find_timestamps(csv_file, question, gpt_output):
     gpt_words = gpt_output.get("words", [])
@@ -27,6 +24,7 @@ def process_csv_and_find_timestamps(csv_file, question, gpt_output):
     gpt_output.update(question)
     return gpt_output
 
+
 def combine_written_to_string(csv_file):
     # Read the CSV file and extract 'written' column, clean, and combine into a single string
     combined_string = ""
@@ -38,6 +36,7 @@ def combine_written_to_string(csv_file):
             combined_string += cleaned_written 
     
     return combined_string.strip()
+
 
 def ask(client, chat_history, prompt):
     chat_history.append(
@@ -63,7 +62,6 @@ def ask(client, chat_history, prompt):
     return chat_history[-1]["content"]
 
 
-
 def extract_python_code(content):
     code_block_regex = re.compile(r"```(.*?)```", re.DOTALL)
     code_blocks = code_block_regex.findall(content)
@@ -76,9 +74,6 @@ def extract_python_code(content):
         return full_code
     else:
         return None
-# print(f"Done.")
-
-# code_block_regex = re.compile(r"```(.*?)```", re.DOTALL)
 
 
 def extract_json(code_block_regex, content):
@@ -92,13 +87,4 @@ def extract_json(code_block_regex, content):
         return full_code
     else:
         return None
-
-
-class colors:  # You may need to change color settings
-    RED = "\033[31m"
-    ENDC = "\033[m"
-    GREEN = "\033[32m"
-    YELLOW = "\033[33m"
-    BLUE = "\033[34m"
-
 

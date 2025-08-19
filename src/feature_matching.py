@@ -157,14 +157,23 @@ def get_aria_img_bbox(context, maskModel, et_csv_file_path, rgb_csv_file_path):
 
     # receive msg from whisperer
     print("Waiting for message from Whisperer...\n")
-    gpt_string = socket.recv_string()
-    gpt_json = json.loads(gpt_string)
-    if gpt_string is None:
+    tool_string = socket.recv_string()
+    if tool_string is None:
         print("No response received, return None")
         return None
     else:
-        print(f"Received String object as response: {gpt_string}")
+        print(f"Received String object as response: {tool_string}")
     
+    tool_json = json.loads(tool_string)
+    tool_call = tool_json["function_name"][0]
+    
+    #check if feature matching is needed or different function is called
+    if tool_call == "grab_brick":
+        gpt_json = tool_json["arguments"][0]
+    else:
+        publish_bbox(context, tool_string, None, None)
+        sys.exit()
+
     # extract timestamps and calculate gaze_points from pitch and yaw
     first_timestamp = gpt_json.get('startTime_ns', [])
     last_timestamp = gpt_json.get('endTime_ns', [])
@@ -306,35 +315,44 @@ def find_focused_bbox(gaze_point, result_boxes):
 
 
 
-def publish_bbox(context, bbox, image_shape):
+def publish_bbox(context, tool_call, bbox, image_shape, grab=False):
+
     # extract most important values from bbox into dictionary
-    bbox_tensor = bbox.xyxy[0]  # Bbbox coordinates as tensor
-    x1, y1, x2, y2 = bbox_tensor.tolist()
-    center_x = (x1 + x2) / 2
-    center_y = (y1 + y2) / 2
-    height, width = image_shape[:2]
-    flipped_center = (width - center_x, height - center_y)
-    bbox_dict = {
-        "confidence": bbox.conf[0],
-        "class": bbox.cls[0],
-        "coordinates": (x1, y1, x2, y2),
-        "center": flipped_center,
-        }
+    if grab:
+        bbox_tensor = bbox.xyxy[0]  # Bbbox coordinates as tensor
+        x1, y1, x2, y2 = bbox_tensor.tolist()
+        center_x = (x1 + x2) / 2
+        center_y = (y1 + y2) / 2
+        height, width = image_shape[:2]
+        flipped_center = (width - center_x, height - center_y)
+        bbox_dict = {
+            "confidence": bbox.conf[0],
+            "class": bbox.cls[0],
+            "coordinates": (x1, y1, x2, y2),
+            "center": flipped_center,
+            }
 
     socket = context.socket(zmq.REQ)
     socket.connect("tcp://10.159.6.33:5559") #IP of Panda3 PC
     print("ZMQ socket connected to Panda3 PC")
     
-    # send bbox center to Panda3 PC
-    socket.send_json(bbox_dict['center'])
-    print("Bounding Box to grab sent to Panda3 PC...")
+    if grab:
+        # send bbox center to Panda3 PC
+        msg = {"function_name": ["grab_brick"],
+                "arguments": [bbox_dict['center']]
+                }
+        socket.send_json(msg)
+        print("Bounding box of brick to grab sent to Panda3 PC...")
+    else:
+        socket.send_string(tool_call)
+        print(f"Command {tool_call['function_name'][0]} sent to Panda3 PC...")
 
     # receive answer, whether correct brick was grabbed
     success = socket.recv_json()
     if success:
-        print("Brick successfully grabbed by Panda")
+        print("Function successfully executed by Panda")
     else:
-        print("Error: Brick not grabbed by Panda")
+        print("Error: Function not successfully executed by Panda")
     socket.close()
 
 
@@ -364,7 +382,7 @@ def match_features():
     print(f"Matched bounding box index: {matched_bbox} with {points_per_bbox} points.")
 
     # 4. publish the Bbox to Panda3 PC for grasping
-    publish_bbox(context, targeted_bbox, robo_img.shape)
+    publish_bbox(context, "grab_brick", targeted_bbox, robo_img.shape, grab=True)
     # example: Coordinates: [496.7156066894531, 66.25860595703125, 550.5313110351562, 96.8639144897461]
 
 
