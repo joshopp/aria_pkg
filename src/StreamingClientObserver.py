@@ -85,6 +85,7 @@ class AudioObserver:
         self.timestamp = []
         self.timestamps = []
         self.received = False
+        self.last_len = 0
 
     
     def resample_audio(self): # source sample rate to fast whisper sample rate = 16k
@@ -98,6 +99,34 @@ class AudioObserver:
         return sampled_audios, starttime_ns
     
 
+
+    # def resample_audio(self):
+    #     audios = np.copy(np.array(self.audios))
+    #     current_len = len(audios[1])
+    #     if current_len <= self.last_len:
+    #         print(f"length: {len(audios[1])}")
+    #         return None, None
+        
+    #     # Nur neuen Teil nehmen
+    #     new_audios = [ch[self.last_len:] for ch in audios]
+    #     self.last_len = current_len
+
+    #     # Mittelwert über 7 Mics
+    #     mixed = np.mean(np.array(new_audios), axis=0)
+
+    #     # Resample von 48k -> 16k
+    #     num_samples = int(len(new_audios[0]) * self.whisper_rate / self.aria_rate)
+    #     sampled_audios = resample(mixed, num_samples)
+
+    #     # Normalisieren auf -1..1
+    #     max_val = np.max(np.abs(sampled_audios))
+    #     if max_val > 0:
+    #         sampled_audios = sampled_audios / max_val
+
+    #     return sampled_audios.astype(np.float32), None
+    
+
+
     def on_audio_received(self, audio_data: AudioData, record: AudioDataRecord):
         self.audio, self.timestamp = audio_data.data, record.capture_timestamps_ns          
         self.timestamps += record.capture_timestamps_ns   
@@ -107,7 +136,7 @@ class AudioObserver:
         if len(self.timestamps) >= rec_limit:
             del self.timestamps[-rec_limit]
 
-        # Mean for Seven microphones
+        # save data to audios
         for c in range(7):
             self.audios[c] += self.audio[c::7]
             if len(self.audios[c]) >= rec_limit:

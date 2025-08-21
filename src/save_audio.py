@@ -1,4 +1,15 @@
 import difflib
+import os
+import numpy as np
+import wave
+import aria.sdk as aria
+from StreamingClientObserver import AudioObserver
+from aria_utils import AriaStreamer
+from faster_whisper import WhisperModel
+import time
+from jiwer import wer, cer, compute_measures
+
+
 def benchmark_transcriptions():
     """
     Vergleicht die Transkripte der 7 Audio-Dateien mit den test_sentences und gibt einen Score aus.
@@ -33,13 +44,6 @@ def benchmark_transcriptions():
         print(f"  Ähnlichkeit: {score:.2f}\n")
     print(f"Durchschnittliche Ähnlichkeit: {total_score/7:.2f}")
 #! /usr/bin/env python
-import os
-import numpy as np
-import wave
-import aria.sdk as aria
-from StreamingClientObserver import AudioObserver
-from aria_utils import AriaStreamer
-from faster_whisper import WhisperModel
 
 
 def save_audio():
@@ -67,7 +71,17 @@ def save_audio():
         audio_buffer = []
         while len(audio_buffer) < num_samples:
             audios_16k, _ = observer.resample_audio()
+            if audios_16k is None or len(audios_16k) == 0:
+                time.sleep(0.01)
+                continue
+
+            # float32 -1..1 → int16
+            audios_16k = np.clip(audios_16k, -1, 1)
+            audios_16k = (audios_16k * 32767).astype(np.int16)
+
             audio_buffer.extend(audios_16k.tolist())
+            # print(len(audio_buffer), "samples collected")
+
         audio_np = np.array(audio_buffer[-num_samples:], dtype=np.int16)
         filename = os.path.join(out_dir, f"sentence_{i+1}.wav")
         with wave.open(filename, 'w') as wf:
@@ -81,18 +95,18 @@ def save_audio():
     print("Alle 7 Aufnahmen gespeichert.")
 
 
-
-
 def test_whisper():
     print("Starting experiment...\n")
     # Modellnamen
-    whisper_models = ["small", "small.en", "base", "base.en", 
+    whisper_models = ["tiny", "tiny.en",
+                      "small","small.en",
+                      "base", "base.en", 
                       "medium", "medium.en",
-                      "large-v2", "large-v2.en"]
+                      "large-v3", "large-v3.en"]
 
     path = "/home/jruopp/thesis_ws/src/aria_pkg/data/experiments/audio/"
     # Alle WAV-Dateien im Verzeichnis finden
-    wav_files = [f for f in os.listdir(path) if f.endswith('.wav')]
+    wav_files = [os.path.join(path, f"sentence_{i+1}.wav") for i in range(10)]
     if not wav_files:
         print("Keine WAV-Dateien gefunden!")
         return
@@ -100,12 +114,19 @@ def test_whisper():
     for model_name in whisper_models:
         print(f"\nTesting Whisper model: {model_name}")
         model = WhisperModel(model_name, device="cuda", compute_type="int8")
-        for wav_file in wav_files:
-            audio_path = os.path.join(path, wav_file)
-            print("used audio file: ", audio_path, "\n")
+        wers = []
+        for i, (audio_path, ref) in enumerate(zip(wav_files, test_sentences)):
+            print("used audio file: ", audio_path[-14:])
+            start = time.time()
             segments, _ = model.transcribe(audio_path, beam_size=5)
-            for segment in segments:
-                result = {segment.text}
+            duration = time.time() - start
+            transcribed = "" + [seg.text for seg in segments]
+            
+            score = wer(ref, transcribed)
+            wers.append(score)
+
+            
+            print(f" Output: {transcribed} \n")
 
 
 test_sentences = ["The quick brown fox jumps over the lazy dog.",
@@ -120,7 +141,11 @@ test_sentences = ["The quick brown fox jumps over the lazy dog.",
                   "Could you remind me to buy groceries after work?"]   
 
 def main():
-    save_audio()
+    # aria = AriaStreamer()
+    # device = aria.stream_start(None, "usb", "profile18")
+
+    # save_audio()
+    test_whisper()
     # Nach der Aufnahme und Speicherung kannst du benchmark_transcriptions() aufrufen:
     # benchmark_transcriptions()
 

@@ -125,7 +125,7 @@ def stream_audio():
             # Publish to 0mq, when not grabbing a brick no intention alignment needed
             tool_string = json.dumps(tool_response, indent=2)
             llm_pub_socket.send_string(tool_string)
-            print(f"tool_call {tool_string}\n published to 0mq, ending GPT inference...")
+            print(f"tool_call {tool_string}\n published to PandaPC, ending GPT inference...")
             sys.exit()
     else:
         print("No tool response received from Avalon1 server, check if it is running")

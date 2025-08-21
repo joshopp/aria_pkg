@@ -59,7 +59,7 @@ def main():
 
     n = 0
     # 2. Use multiprocessing to run the img stream, audio stream, and feature matching pipelines
-    while n<2:
+    while n<10:
         print("Starting iteration..")
         ctx = multiprocessing.get_context("spawn")
         img_proc = ctx.Process(target=stream_image)
