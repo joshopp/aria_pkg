@@ -88,42 +88,42 @@ class AudioObserver:
         self.last_len = 0
 
     
-    def resample_audio(self): # source sample rate to fast whisper sample rate = 16k
-        starttime_ns = np.copy(self.timestamps[0])
-        audios = np.copy(np.array(self.audios))
-        num_samples = int(len(audios[0]) * self.whisper_rate / self.aria_rate)
-        sampled_audios = resample(np.mean(np.array(audios), axis=0), num_samples)
+    # def resample_audio(self): # source sample rate to fast whisper sample rate = 16k
+    #     starttime_ns = np.copy(self.timestamps[0])
+    #     audios = np.copy(np.array(self.audios))
+    #     num_samples = int(len(audios[0]) * self.whisper_rate / self.aria_rate)
+    #     sampled_audios = resample(np.mean(np.array(audios), axis=0), num_samples)
         
-        sampled_audios = sampled_audios / 1e8 # normalize sound intensity
-        sampled_audios = sampled_audios.astype(np.float32)
-        return sampled_audios, starttime_ns
+    #     sampled_audios = sampled_audios / 1e8 # normalize sound intensity
+    #     sampled_audios = sampled_audios.astype(np.float32)
+    #     return sampled_audios, starttime_ns
     
 
 
-    # def resample_audio(self):
-    #     audios = np.copy(np.array(self.audios))
-    #     current_len = len(audios[1])
-    #     if current_len <= self.last_len:
-    #         print(f"length: {len(audios[1])}")
-    #         return None, None
+    def resample_audio(self):
+        audios = np.copy(np.array(self.audios))
+        current_len = len(audios[1])
+        if current_len <= self.last_len:
+            # print(f"length: {len(audios[1])}")
+            return None, None
         
-    #     # Nur neuen Teil nehmen
-    #     new_audios = [ch[self.last_len:] for ch in audios]
-    #     self.last_len = current_len
+        # Nur neuen Teil nehmen
+        new_audios = [ch[self.last_len:] for ch in audios]
+        self.last_len = current_len
 
-    #     # Mittelwert über 7 Mics
-    #     mixed = np.mean(np.array(new_audios), axis=0)
+        # Mittelwert über 7 Mics
+        mixed = np.mean(np.array(new_audios), axis=0)
 
-    #     # Resample von 48k -> 16k
-    #     num_samples = int(len(new_audios[0]) * self.whisper_rate / self.aria_rate)
-    #     sampled_audios = resample(mixed, num_samples)
+        # Resample von 48k -> 16k
+        num_samples = int(len(new_audios[0]) * self.whisper_rate / self.aria_rate)
+        sampled_audios = resample(mixed, num_samples)
 
-    #     # Normalisieren auf -1..1
-    #     max_val = np.max(np.abs(sampled_audios))
-    #     if max_val > 0:
-    #         sampled_audios = sampled_audios / max_val
+        # Normalisieren auf -1..1
+        max_val = np.max(np.abs(sampled_audios))
+        if max_val > 0:
+            sampled_audios = sampled_audios / max_val
 
-    #     return sampled_audios.astype(np.float32), None
+        return sampled_audios.astype(np.float32), None
     
 
 

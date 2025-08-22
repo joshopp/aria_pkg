@@ -7,7 +7,7 @@ from StreamingClientObserver import AudioObserver
 from aria_utils import AriaStreamer
 from faster_whisper import WhisperModel
 import time
-from jiwer import wer, cer, compute_measures
+# from jiwer import wer, cer, compute_measures
 
 
 def benchmark_transcriptions():
@@ -49,21 +49,22 @@ def benchmark_transcriptions():
 def save_audio():
     audio_streamer = AriaStreamer()
     data_channels = [aria.StreamingDataType.Audio]
-    message_size = 100
+    message_size = 1000
     observer = audio_streamer.stream_subscribe(data_channels, AudioObserver(), message_size)
 
-    out_dir = "/home/jruopp/thesis_ws/src/aria_pkg/data/experiments/audio/"
+    # out_dir = "/home/jruopp/thesis_ws/src/aria_pkg/data/experiments/audio/"
+    out_dir = "/home/joshy/Bachelorthesis/aria_pkg/data/experiments/audio/"
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
     sample_rate = 16000
-    duration_sec = 8
+    duration_sec = 6
     num_samples = sample_rate * duration_sec
 
-    print("Bitte sprich 7 Sätze, jeweils 15 Sekunden. Aufnahme startet automatisch, sobald Audio empfangen wird.")
+    print("Bitte sprich 10 Sätze, jeweils 10 Sekunden. Aufnahme startet automatisch, sobald Audio empfangen wird.")
 
-    for i in range(7):
-        print(f"Bereit für Aufnahme {i+1}/7 ...")
+    for i in range(10):
+        print(f"Bereit für Aufnahme {i+1}/10 ...")
         # Warte auf neue Daten
         while not observer.received:
             pass
@@ -141,11 +142,11 @@ test_sentences = ["The quick brown fox jumps over the lazy dog.",
                   "Could you remind me to buy groceries after work?"]   
 
 def main():
-    # aria = AriaStreamer()
-    # device = aria.stream_start(None, "usb", "profile18")
+    aria = AriaStreamer()
+    device = aria.stream_start(None, "usb", "profile18")
 
-    # save_audio()
-    test_whisper()
+    save_audio()
+    # test_whisper()
     # Nach der Aufnahme und Speicherung kannst du benchmark_transcriptions() aufrufen:
     # benchmark_transcriptions()
 
