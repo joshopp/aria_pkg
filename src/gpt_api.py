@@ -5,7 +5,7 @@ import pandas as pd
 
 
 def process_csv_and_find_timestamps(csv_file, question, gpt_output):
-    gpt_words = gpt_output.get("words", [])
+    gpt_words = gpt_output.get("word", [])
     timestamp_result = {'startTime_ns': [], 'endTime_ns': []}
     question = {'question': [question]}
     reader = pd.read_csv(csv_file)
@@ -60,31 +60,3 @@ def ask(client, chat_history, prompt):
         }
     )
     return chat_history[-1]["content"]
-
-
-def extract_python_code(content):
-    code_block_regex = re.compile(r"```(.*?)```", re.DOTALL)
-    code_blocks = code_block_regex.findall(content)
-    if code_blocks:
-        full_code = "\n".join(code_blocks)
-
-        if full_code.startswith("json"):
-            full_code = full_code[5:]
-
-        return full_code
-    else:
-        return None
-
-
-def extract_json(code_block_regex, content):
-    code_blocks = code_block_regex.findall(content)
-    if code_blocks:
-        full_code = "\n".join(code_blocks)
-
-        if full_code.startswith("json"):
-            full_code = full_code[7:]
-
-        return full_code
-    else:
-        return None
-

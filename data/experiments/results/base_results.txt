@@ -1,0 +1,364 @@
+==== Results for Whisper model: base ====
+
+
+--- Folder: clean ---
+
+First iteration transcripts:
+
+sentence_1.wav
+ REF: The quick brown fox jumps over the lazy dog.
+ HYP: The frequent round fox jumps over the lazy dog.
+
+sentence_2.wav
+ REF: She sells seashells by the seashore.
+ HYP: She sells seashells by the sea shore.
+
+sentence_3.wav
+ REF: Can you help me with my homework tonight?
+ HYP: Can you help me with my homework tonight?
+
+sentence_4.wav
+ REF: It is raining heavily outside, so take an umbrella.
+ HYP: It is raining heavily outside, so take an umbrella.
+
+sentence_5.wav
+ REF: I will call you when I arrive at the station.
+ HYP: I will call you when I arrive at the station.
+
+sentence_6.wav
+ REF: Learning a new language takes time and patience.
+ HYP: Learning a new language takes time and patience.
+
+sentence_7.wav
+ REF: Please pass me the salt and pepper from the table.
+ HYP: Please pass me the salt and pepper from the table.
+
+sentence_8.wav
+ REF: Did you see the movie last night, or was it too late?
+ HYP: Did you see the movie last night or was it too late?
+
+sentence_9.wav
+ REF: I think we should go for a walk before dinner.
+ HYP: I think we should go for a walk before dinner.
+
+sentence_10.wav
+ REF: Could you remind me to buy groceries after work?
+ HYP: Could you remind me to buy groceries after work?
+
+sentence_11.wav
+ REF: The quick brown fox jumps over the lazy dog.
+ HYP: The quick brown fox jumps over a lazy dog.
+
+sentence_12.wav
+ REF: She sells seashells by the seashore.
+ HYP: She sells seashells by the sea shore.
+
+sentence_13.wav
+ REF: Can you help me with my homework tonight?
+ HYP: Can you help me with my homework tonight?
+
+sentence_14.wav
+ REF: It is raining heavily outside, so take an umbrella.
+ HYP: It's raining heavily outside so it's taken umbrella.
+
+sentence_15.wav
+ REF: I will call you when I arrive at the station.
+ HYP: I will call you when I arrive at the station.
+
+sentence_16.wav
+ REF: Learning a new language takes time and patience.
+ HYP: Learning a new language takes time and patience.
+
+sentence_17.wav
+ REF: Please pass me the salt and pepper from the table.
+ HYP: Please pass me the salt and pepper from the table.
+
+sentence_18.wav
+ REF: Did you see the movie last night, or was it too late?
+ HYP: Did you see the movie last night or was it too late?
+
+sentence_19.wav
+ REF: I think we should go for a walk before dinner.
+ HYP: I think we should go for a walk before dinner.
+
+sentence_20.wav
+ REF: Could you remind me to buy groceries after work?
+ HYP: Could you remind me to bike groceries after work?
+
+
+WER (clean): mean=0.092, std=0.151
+CER (clean): mean=0.031, std=0.060
+
+
+--- Folder: 60dB ---
+
+First iteration transcripts:
+
+sentence_1.wav
+ REF: The quick brown fox jumps over the lazy dog.
+ HYP: The cring-brown fox jumps over the lazy dog.
+
+sentence_2.wav
+ REF: She sells seashells by the seashore.
+ HYP: She sells seashells by the sea shore.
+
+sentence_3.wav
+ REF: Can you help me with my homework tonight?
+ HYP: Can you help me with my homework tonight?
+
+sentence_4.wav
+ REF: It is raining heavily outside, so take an umbrella.
+ HYP: It is raining heavily outside so take an umbrella.
+
+sentence_5.wav
+ REF: I will call you when I arrive at the station.
+ HYP: I will call you when I arrive at the station.
+
+sentence_6.wav
+ REF: Learning a new language takes time and patience.
+ HYP: Learning a new language takes time and patience.
+
+sentence_7.wav
+ REF: Please pass me the salt and pepper from the table.
+ HYP: Please ask me the salt and pepper from the table.
+
+sentence_8.wav
+ REF: Did you see the movie last night, or was it too late?
+ HYP: Did you see the movie last night or was it too late?
+
+sentence_9.wav
+ REF: I think we should go for a walk before dinner.
+ HYP: I think we should go for a walk before dinner.
+
+sentence_10.wav
+ REF: Could you remind me to buy groceries after work?
+ HYP: Could you remind me to buy groceries after work?
+
+sentence_11.wav
+ REF: The quick brown fox jumps over the lazy dog.
+ HYP: The quick brown fox jumps over a lazy dog.
+
+sentence_12.wav
+ REF: She sells seashells by the seashore.
+ HYP: She sells seashells by the seashore.
+
+sentence_13.wav
+ REF: Can you help me with my homework tonight?
+ HYP: Can you help me with my homework tonight?
+
+sentence_14.wav
+ REF: It is raining heavily outside, so take an umbrella.
+ HYP: It is raining heavily outside, so take an umbrella
+
+sentence_15.wav
+ REF: I will call you when I arrive at the station.
+ HYP: I will call you when I arrive at the station.
+
+sentence_16.wav
+ REF: Learning a new language takes time and patience.
+ HYP: Learning a new language takes time and patience.
+
+sentence_17.wav
+ REF: Please pass me the salt and pepper from the table.
+ HYP: Please pass me the salt on the pepper from the table.
+
+sentence_18.wav
+ REF: Did you see the movie last night, or was it too late?
+ HYP: Did you see the movie last night or was it too late?
+
+sentence_19.wav
+ REF: I think we should go for a walk before dinner.
+ HYP: I think we should go for a walk before dinner
+
+sentence_20.wav
+ REF: Could you remind me to buy groceries after work?
+ HYP: Could you remind me to buy groceries after work?
+
+
+WER (60dB): mean=0.073, std=0.091
+CER (60dB): mean=0.022, std=0.033
+
+
+--- Folder: 80dB ---
+
+First iteration transcripts:
+
+sentence_1.wav
+ REF: The quick brown fox jumps over the lazy dog.
+ HYP: The quick round fox jumps over the lazy dog
+
+sentence_2.wav
+ REF: She sells seashells by the seashore.
+ HYP: She sells seashells by the sea shore.
+
+sentence_3.wav
+ REF: Can you help me with my homework tonight?
+ HYP: Can you help me with my homework tonight?
+
+sentence_4.wav
+ REF: It is raining heavily outside, so take an umbrella.
+ HYP: It is raining heavily outside, so take an umbrella.
+
+sentence_5.wav
+ REF: I will call you when I arrive at the station.
+ HYP: I will call you when I arrive at the station.
+
+sentence_6.wav
+ REF: Learning a new language takes time and patience.
+ HYP: Learning a new language takes time and patience.
+
+sentence_7.wav
+ REF: Please pass me the salt and pepper from the table.
+ HYP: Please pass me the salt and pepper from the table.
+
+sentence_8.wav
+ REF: Did you see the movie last night, or was it too late?
+ HYP: Did you see the movie last night or was it too late?
+
+sentence_9.wav
+ REF: I think we should go for a walk before dinner.
+ HYP: I think we should go for a walk before dinner.
+
+sentence_10.wav
+ REF: Could you remind me to buy groceries after work?
+ HYP: Could you remind me to buy groceries after work?
+
+sentence_11.wav
+ REF: The quick brown fox jumps over the lazy dog.
+ HYP: The quick brown fox jumps over the lady dog.
+
+sentence_12.wav
+ REF: She sells seashells by the seashore.
+ HYP: She's there, she's health by the C-Shore.
+
+sentence_13.wav
+ REF: Can you help me with my homework tonight?
+ HYP: Can you help me with my homework tonight?
+
+sentence_14.wav
+ REF: It is raining heavily outside, so take an umbrella.
+ HYP: It is raining heavily outside so I'll take an umbrella.
+
+sentence_15.wav
+ REF: I will call you when I arrive at the station.
+ HYP: I will call you when I arrive at the station.
+
+sentence_16.wav
+ REF: Learning a new language takes time and patience.
+ HYP: Learning a new language takes time and patience.
+
+sentence_17.wav
+ REF: Please pass me the salt and pepper from the table.
+ HYP: Please pass me the salt and pepper from the table.
+
+sentence_18.wav
+ REF: Did you see the movie last night, or was it too late?
+ HYP: Did you see the movie last night or was it too late?
+
+sentence_19.wav
+ REF: I think we should go for a walk before dinner.
+ HYP: I think we should go for a walk before dinner.
+
+sentence_20.wav
+ REF: Could you remind me to buy groceries after work?
+ HYP: Could you remind me to buy groceries after work?
+
+
+WER (80dB): mean=0.094, std=0.194
+CER (80dB): mean=0.038, std=0.105
+
+
+--- Folder: 90dB ---
+
+First iteration transcripts:
+
+sentence_1.wav
+ REF: The quick brown fox jumps over the lazy dog.
+ HYP: The creep round fox jumps over the lazy dog.
+
+sentence_2.wav
+ REF: She sells seashells by the seashore.
+ HYP: She sells seashells, he does seal shows.
+
+sentence_3.wav
+ REF: Can you help me with my homework tonight?
+ HYP: Can you help me with my homework tonight?
+
+sentence_4.wav
+ REF: It is raining heavily outside, so take an umbrella.
+ HYP: It is raining heavily outside so take an umbrella.
+
+sentence_5.wav
+ REF: I will call you when I arrive at the station.
+ HYP: I will call you when I arrive at the station.
+
+sentence_6.wav
+ REF: Learning a new language takes time and patience.
+ HYP: Learning a new language takes time in patience.
+
+sentence_7.wav
+ REF: Please pass me the salt and pepper from the table.
+ HYP: Please pass me the salt and pepper from the tables.
+
+sentence_8.wav
+ REF: Did you see the movie last night, or was it too late?
+ HYP: Did you see the movie last night and was it too late?
+
+sentence_9.wav
+ REF: I think we should go for a walk before dinner.
+ HYP: I think we should go for a walk before dinner.
+
+sentence_10.wav
+ REF: Could you remind me to buy groceries after work?
+ HYP: Could you remind me to buy groceries after work?
+
+sentence_11.wav
+ REF: The quick brown fox jumps over the lazy dog.
+ HYP: This is a great show. I'll see you all in the next video.
+
+sentence_12.wav
+ REF: She sells seashells by the seashore.
+ HYP: You can see that please help by the show. You can see that by the way.
+
+sentence_13.wav
+ REF: Can you help me with my homework tonight?
+ HYP: Chúng tôi sẽ không có thể chết với các bạn. Chúng tôi sẽ không có thể chết với các bạn.
+
+sentence_14.wav
+ REF: It is raining heavily outside, so take an umbrella.
+ HYP: You can get this ready carefully outside, so check it out for a lot of changes.
+
+sentence_15.wav
+ REF: I will call you when I arrive at the station.
+ HYP: I will call you in the air and write, so you can see how the air is passing through.
+
+sentence_16.wav
+ REF: Learning a new language takes time and patience.
+ HYP: Learning in the next slide is a good opportunity for me.
+
+sentence_17.wav
+ REF: Please pass me the salt and pepper from the table.
+ HYP: Das ist ein sehr gutes Sodium, das ist auch ein sehr gutes Sodium.
+
+sentence_18.wav
+ REF: Did you see the movie last night, or was it too late?
+ HYP: Thank you very much. Did you see the moon the last night? I wasn't feeling well.
+
+sentence_19.wav
+ REF: I think we should go for a walk before dinner.
+ HYP: I think we should go forward and start the lab. We did work.
+
+sentence_20.wav
+ REF: Could you remind me to buy groceries after work?
+ HYP: Here we go. I do remember it's my grocery shop that we're at.
+
+
+WER (90dB): mean=0.787, std=0.726
+CER (90dB): mean=0.505, std=0.483
+
+
+=== Overall Model Results ===
+
+Global WER: mean=0.261, std=0.490
+Global CER: mean=0.149, std=0.323
+Transcription Rate: 133.61 words/sec

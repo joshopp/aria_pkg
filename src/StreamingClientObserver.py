@@ -88,19 +88,19 @@ class AudioObserver:
         self.last_len = 0
 
     
-    # def resample_audio(self): # source sample rate to fast whisper sample rate = 16k
-    #     starttime_ns = np.copy(self.timestamps[0])
-    #     audios = np.copy(np.array(self.audios))
-    #     num_samples = int(len(audios[0]) * self.whisper_rate / self.aria_rate)
-    #     sampled_audios = resample(np.mean(np.array(audios), axis=0), num_samples)
+    def resample_audio(self): # source sample rate to fast whisper sample rate = 16k
+        starttime_ns = np.copy(self.timestamps[0])
+        audios = np.copy(np.array(self.audios))
+        num_samples = int(len(audios[0]) * self.whisper_rate / self.aria_rate)
+        sampled_audios = resample(np.mean(np.array(audios), axis=0), num_samples)
         
-    #     sampled_audios = sampled_audios / 1e8 # normalize sound intensity
-    #     sampled_audios = sampled_audios.astype(np.float32)
-    #     return sampled_audios, starttime_ns
+        sampled_audios = sampled_audios / 1e8 # normalize sound intensity
+        sampled_audios = sampled_audios.astype(np.float32)
+        return sampled_audios, starttime_ns
     
 
 
-    def resample_audio(self):
+    def resample_audio_wav(self):
         audios = np.copy(np.array(self.audios))
         current_len = len(audios[1])
         if current_len <= self.last_len:

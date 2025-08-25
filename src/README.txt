@@ -10,11 +10,8 @@ provider.set_color_correction(True)
 Questions:
 
 1. Content
-	OpenAI architecture overkill?	yes
 	Eye Gaze Tracking figure
-	Related work also other (non official) theses?	No
 	
-	Framework: Yes what?		Add it
 	Explain setup prompt more? 	how built, input/output
 	
 2. Experiments

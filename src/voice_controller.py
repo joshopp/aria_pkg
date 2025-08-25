@@ -131,11 +131,10 @@ def stream_audio():
         print("No tool response received from Avalon1 server, check if it is running")
 
     # process intention alignment
-    intent_response = response.get("intent")
+    intent_response = json.loads(response.get("intent"))
     if intent_response is not None:
-        json_output = json.loads(gpt_api.extract_python_code(intent_response))
-        print(f"Intent response received: {json_output}\n")
-        intent_json = gpt_api.process_csv_and_find_timestamps(csv_filepath, question, json_output)
+        print(f"Intent response received: {intent_response}\n")
+        intent_json = gpt_api.process_csv_and_find_timestamps(csv_filepath, question, intent_response)
         tool_response["arguments"] = [intent_json]
         tool_string = json.dumps(tool_response, indent=2)
         llm_pub_socket.send_string(tool_string)
@@ -146,3 +145,16 @@ def stream_audio():
     # close 0mq sockets
     avalon_socket.close()
     llm_pub_socket .close()
+
+    #     # process intention alignment
+    # intent_response = response.get("intent")
+    # if intent_response is not None:
+    #     json_output = json.loads(gpt_api.extract_python_code(intent_response))
+    #     print(f"Intent response received: {json_output}\n")
+    #     intent_json = gpt_api.process_csv_and_find_timestamps(csv_filepath, question, json_output)
+    #     tool_response["arguments"] = [intent_json]
+    #     tool_string = json.dumps(tool_response, indent=2)
+    #     llm_pub_socket.send_string(tool_string)
+    #     print(f"tool_call {tool_string} published to 0mq, ending GPT inference...")
+    # else:
+    #     print("No intent response received from Avalon1 server, check if it is running")

@@ -163,5 +163,3 @@ def stream_image():
     img_streamer.streaming_client.unsubscribe()
     cv2.destroyAllWindows()
     print("Imaginary2 terminated, Image stream unsubscribed")   
-
-# stream_image()

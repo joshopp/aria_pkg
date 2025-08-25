@@ -390,7 +390,7 @@ def match_features():
 #match_features(context)
 
 # {
-#   "words": [
+#   "word": [
 #     "this"
 #   ],
 #   "object_name": [
