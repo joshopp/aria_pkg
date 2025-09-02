@@ -123,13 +123,13 @@ python benchmark_asr.py --benchmark_whisper
 ```
 
 ### Customization Options
-**Test Sentences**: Modify at the top of `benchmark_asr.py`
+- **Test Sentences**: Modify at the top of `benchmark_asr.py`
 
-**Models**: Change at the start of `benchmark_whisper()` function
+- **Models**: Change at the start of `benchmark_whisper()` function
 
-**Audio Samples**: Modify folder paths at start of `benchmark_whisper()`
+- **Audio Samples**: Modify folder paths at start of `benchmark_whisper()`
 
-**Files per Folder**: Change in line 101
+- **Files per Folder**: Change in line 101
 
 
 ## Architecture
