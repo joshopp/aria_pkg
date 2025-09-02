@@ -138,6 +138,7 @@ This component operates as part of a three-part system:
 1. Multimodal data component (this package): Streams and processes data from the Meta Aria glasses
 2. Robot Component: Handles robot control (https://github.com/joshopp/robot_pkg)
 3. LLM Component: Manages language understanding and tool calling (https://github.com/joshopp/llama_pkg)
+   
 The components communicate through a distributed architecture using ZeroMQ for efficient inter-process communication.
 
 
