@@ -194,14 +194,12 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-
-
-
-# Ignoriere alle Inhalte im data-Verzeichnis
-data/*
-
-# Aber NICHT die Dateien direkt in data/
-!data/*.*
-!data/vrs
+# custom:
 src/test.py
 src/best.pt
+
+# ignore everything in data
+data/*
+# except for files
+!data/*.*
+
