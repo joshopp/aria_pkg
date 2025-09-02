@@ -18,7 +18,7 @@ This library is one of three components in a complete multimodal manipulation sy
 - Ubuntu 22+
 - Python 3.8+
 - Project Aria glasses
-- SuperGlue installation (https://github.com/magicleap/SuperGluePretrainedNetwork)
+- [SuperGlue](https://github.com/magicleap/SuperGluePretrainedNetwork) installation
 - YOLO model file (`best.pt`)
 - Additional dependencies listed in `requirements.txt`
   
@@ -113,13 +113,13 @@ Run benchmarking with the **`benchmark_asr`** script
 ### Audio Data Collection
 ```bash
 # Save 10 test sentences of 6 seconds each
-python benchmark_asr.py --record_audio
+python3 benchmark_asr.py --record_audio
 ```
 
 ### ASR Performance Testing
 ```bash
 # Benchmark all .wav files (currently 20 files per folder)
-python benchmark_asr.py --benchmark_whisper
+python3 benchmark_asr.py --benchmark_whisper
 ```
 
 ### Customization Options
@@ -135,9 +135,9 @@ python benchmark_asr.py --benchmark_whisper
 ## Architecture
 This component operates as part of a three-part system:
 
-1. Multimodal data component (this package): Streams and processes data from the Meta Aria glasses
-2. Robot Component: Handles robot control (https://github.com/joshopp/robot_pkg)
-3. LLM Component: Manages language understanding and tool calling (https://github.com/joshopp/llama_pkg)
+1. **Multimodal data straming component (this package):** Streams and processes data from the Meta Aria glasses
+2. **[Robot Component](https://github.com/joshopp/robot_pkg):** Handles robot control
+3. **[LLM Component](https://github.com/joshopp/llama_pkg):** Manages language understanding and tool calling 
    
 The components communicate through a distributed architecture using ZeroMQ for efficient inter-process communication.
 
