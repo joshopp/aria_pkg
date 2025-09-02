@@ -1,8 +1,6 @@
-import operator
-from functools import reduce
-
 import aria.sdk as aria
-
+from functools import reduce
+import operator
 
 
 
@@ -23,7 +21,6 @@ class AriaStreamer:
             client_config.ip_v4_address = device_ip
         self.device_client.set_client_config(client_config)
 
-
         # 2. Connect to the device and print status info
         device = self.device_client.connect()
         print("Device connected")
@@ -34,10 +31,8 @@ class AriaStreamer:
             )
         )
 
-
         # 3. Retrieve the streaming_manager
         streaming_manager = device.streaming_manager
-
 
         # 4. Set custom config for streaming
         streaming_config = aria.StreamingConfig()
@@ -48,18 +43,15 @@ class AriaStreamer:
         streaming_config.security_options.use_ephemeral_certs = True
         streaming_manager.streaming_config = streaming_config
 
-
         # 5. Start streaming and print state
         streaming_manager.start_streaming()
         streaming_state = streaming_manager.streaming_state
         print(f"Streaming state: {streaming_state}")
         print(f"Streaming Profile: {streaming_manager.streaming_config.profile_name}")
-
         return device
 
 
     def stream_subscribe(self, streamed_data, observer, message_size):
- 
         # 1. Set costum config for subscribing
         config = self.streaming_client.subscription_config
         config.subscriber_data_type = reduce(operator.or_, streamed_data)
@@ -67,19 +59,16 @@ class AriaStreamer:
         for data_type in streamed_data:
             config.message_queue_size[data_type] = message_size
         
-
         # 2. Set the security options
         options = aria.StreamingSecurityOptions()
         options.use_ephemeral_certs = True
         config.security_options = options
         self.streaming_client.subscription_config = config
 
-
         # 3. Attach observer and subscribe start listening
         self.streaming_client.set_streaming_client_observer(observer)
         self.streaming_client.subscribe()
         print("Start listening to data")
-
         return observer
     
 

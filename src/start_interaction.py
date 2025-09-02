@@ -1,18 +1,12 @@
-# Pipeline, die alle notwendigen Schritte für die Interaktion mit dem Roboter ausführt.
 import argparse
-import sys
 from aria_utils import AriaStreamer
-from common import update_iptables
+import multiprocessing
+import sys
+
+from common import update_iptables, TerminalRawMode, exit_keypress
 from gaze_processor import stream_image
 from voice_controller import stream_audio
 from feature_matching import match_features
-import multiprocessing
-import zmq
-
-import torch
-import gc
-import os
-
 
 
 def parse_args() -> argparse.Namespace:
@@ -46,20 +40,20 @@ def parse_args() -> argparse.Namespace:
 
 
 
-
+# pipeline for complete interaction.
 def main():
     args = parse_args()
 
     if args.update_iptables and sys.platform.startswith("linux"):
         update_iptables()
 
-    # 1. Create AriaStreamer instance and start streaming
+    # 1. create AriaStreamer instance and start streaming
     aria = AriaStreamer()
     device = aria.stream_start(args.device_ip, args.streaming_interface, args.profile_name)
 
-    n = 0
     # 2. Use multiprocessing to run the img stream, audio stream, and feature matching pipelines
-    while n<4:
+    # Press ESC or q to end loop
+    while not exit_keypress():
         print("Starting iteration..")
         ctx = multiprocessing.get_context("spawn")
         img_proc = ctx.Process(target=stream_image)
@@ -79,9 +73,9 @@ def main():
 
         matcher_proc.join()
         print("Feature matching process finished.")
-        n += 1
 
     aria.stream_end(device)
 
 if __name__ == "__main__":
-    main()
+    with TerminalRawMode:
+        main()

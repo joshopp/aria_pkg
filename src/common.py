@@ -1,24 +1,9 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-import signal
-import subprocess
-from contextlib import contextmanager
-
-import sys, select, termios, tty
-
 import cv2
+import select
+import subprocess
+import sys
+import termios
+import tty
 
 
 def update_iptables() -> None:
@@ -44,42 +29,23 @@ def update_iptables() -> None:
     subprocess.run(update_iptables_cmd)
 
 
-@contextmanager
-def ctrl_c_handler(signal_handler=None):
-    class ctrl_c_state:
-        def __init__(self):
-            self._caught_ctrl_c = False
-
-        def __bool__(self):
-            return self._caught_ctrl_c
-
-    state = ctrl_c_state()
-
-    def _handler(sig, frame):
-        state._caught_ctrl_c = True
-        if signal_handler:
-            signal_handler()
-
-    original_sigint_handler = signal.getsignal(signal.SIGINT)
-    signal.signal(signal.SIGINT, _handler)
-
-    try:
-        yield state
-    finally:
-        signal.signal(signal.SIGINT, original_sigint_handler)
-
+# quit cv2 displays
 def quit_keypress():
     key = cv2.waitKey(1)
     # Press ESC, 'q'
     return key == 27 or key == ord("q")
 
-def quit_keypress2():
+
+# quit whole program
+def exit_keypress():
     dr, _, _ = select.select([sys.stdin], [], [], 0)
     if dr:
         ch = sys.stdin.read(1)
         return ch in ('q', '\x1b')
     return False
 
+
+# fallback to handle exit_keypress
 class TerminalRawMode:
     def __enter__(self):
         print("\nEnter Terminal Raw Mode\n")

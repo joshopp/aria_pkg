@@ -1,3 +1,4 @@
+import aria.sdk as aria
 import csv
 import cv2
 import numpy as np
@@ -5,14 +6,11 @@ import os
 import shutil
 import threading
 import time
-import torch
 import zmq
 
-import aria.sdk as aria
-from projectaria_eyetracking.projectaria_eyetracking import real_time_inference
-
-from common import quit_keypress
 from aria_utils import AriaStreamer
+from common import quit_keypress
+import real_time_inference
 from StreamingClientObserver import ImageObserver
 
 
@@ -83,7 +81,7 @@ def control_command_listener():
             current_time = time.time()
             if command == "WAIT":
                 saving_state = 0
-                if current_time - last_print_time >= 1: # print every second
+                if current_time - last_print_time >= 2: # print every two seconds
                     print("Subscriber is running, waiting for start command")
                     last_print_time = current_time
             elif command == "START" and saving_state == 0:
@@ -99,26 +97,24 @@ def control_command_listener():
         socket.close()
             
 
-
-
 def stream_image():
-    save_path = "/home/jruopp/thesis_ws/src/aria_pkg/data" # path for Lab
-    camera_id_map = {2: "rgbcam", 3: "eyetrack"} # TODO: brauche ich alle?
-
+    filepath = os.path.dirname(os.path.abspath(__file__))
+    save_path = os.path.join(filepath, "data")
+    
+    camera_id_map = {2: "rgbcam", 3: "eyetrack"}
     eyetrack_folder = os.path.join(save_path, "eyetracking")
     mk_cam_dir(save_path, camera_id_map)
     mk_et_dir_csv(eyetrack_folder)
     mk_img_dir(save_path)
 
     # 1. start interaction model to visualize et
-    # inference_model, device_calibration, rgb_camera_calibration, rgb_stream_label, rgb_linear_camera_calibration, slam_camera_calibration, slam_linear_camera_calibration, T_device_CPF = real_time_inference.eyetracking_initialization("cuda")
     inference_model, device_calibration, rgb_label, rgb_camera_calibration, rgb_linear_camera_calibration = real_time_inference.eyetracking_initialization("cuda")
 
     # 2. subscribe to desired data channels
     img_streamer = AriaStreamer()
     data_channels = [aria.StreamingDataType.Rgb,
                      aria.StreamingDataType.EyeTrack]  
-    message_size = 1  # Adjust as needed, 1 is usually sufficient for real-time applications
+    message_size = 1  # adjust as needed, 1 is usually sufficient for real-time applications
     observer = img_streamer.stream_subscribe(data_channels, ImageObserver(rgb_camera_calibration, rgb_linear_camera_calibration, save_path, camera_id_map), message_size)
     
     # 3. listening thread for 0mq control msg
@@ -138,6 +134,7 @@ def stream_image():
             print("incorrect value mapping")
         gaze_point, image_with_gaze = real_time_inference.eye_tracking_visualization(device_calibration, rgb_camera_calibration, rgb_label, aria.CameraId.Rgb, observer.images, value_mapping) #, T_device_CPF)
         
+        # # activate to permanently stream images
         # if image_with_gaze is not None:
         #     rotated_image = np.rot90(image_with_gaze, -1)
         #     color_img = cv2.cvtColor(rotated_image, cv2.COLOR_RGB2BGR)
@@ -145,6 +142,7 @@ def stream_image():
         # else:
         #     print("image with gaze is None")
 
+        # visualize streaming and save when START command is detected
         if saving_state == 1:
             observer.save_flag = True
             if image_with_gaze is not None:

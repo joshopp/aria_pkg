@@ -1,14 +1,11 @@
-#! /usr/bin/env python
-import csv
-import os
-import numpy as np
-
 import aria.sdk as aria
+import csv
+import numpy as np
+import os
 from projectaria_tools.core import calibration
-from projectaria_tools.core.sensor_data import ImageDataRecord, MotionData
+from projectaria_tools.core.sensor_data import ImageDataRecord
 from projectaria_tools.core.sensor_data import AudioDataRecord, AudioData
 from scipy.signal import resample
-
 
 
 
@@ -63,21 +60,9 @@ class ImageObserver:
                 np.save(os.path.join(undistort_path, f"{timestamp_ns}.npy"), undistort_image)
 
 
-
-class BoundingObserver:
-    def __init__(self):
-        self.images = {}
-        self.timestamp = 0
-
-
-    def on_image_received(self, image: np.array, record: ImageDataRecord):
-        self.images[record.camera_id] = image
-        self.timestamp = record.capture_timestamp_ns
-
-
 class AudioObserver:
     def __init__(self):
-        self.whisper_rate = 16000 # sample rate faster Whisper = 16000
+        self.whisper_rate = 16000 # sample rate faster-whisper = 16000
         self.aria_rate= 48000 # sample rate Aria = 48000
         self.audio = []
         self.audios = [[] for c in range(7)]
@@ -87,45 +72,37 @@ class AudioObserver:
         self.received = False
         self.last_len = 0
 
-    
-    def resample_audio(self): # source sample rate to fast whisper sample rate = 16k
+    # source sample rate to 16k
+    def resample_audio(self):
         starttime_ns = np.copy(self.timestamps[0])
         audios = np.copy(np.array(self.audios))
         num_samples = int(len(audios[0]) * self.whisper_rate / self.aria_rate)
         sampled_audios = resample(np.mean(np.array(audios), axis=0), num_samples)
-        
         sampled_audios = sampled_audios / 1e8 # normalize sound intensity
         sampled_audios = sampled_audios.astype(np.float32)
         return sampled_audios, starttime_ns
     
-
-
+    # source sample rate to 16k for saving audios as wav
     def resample_audio_wav(self):
         audios = np.copy(np.array(self.audios))
         current_len = len(audios[1])
         if current_len <= self.last_len:
-            # print(f"length: {len(audios[1])}")
             return None, None
-        
-        # Nur neuen Teil nehmen
+        # only save new part
         new_audios = [ch[self.last_len:] for ch in audios]
         self.last_len = current_len
-
-        # Mittelwert über 7 Mics
         mixed = np.mean(np.array(new_audios), axis=0)
 
         # Resample von 48k -> 16k
         num_samples = int(len(new_audios[0]) * self.whisper_rate / self.aria_rate)
         sampled_audios = resample(mixed, num_samples)
 
-        # Normalisieren auf -1..1
+        # normalize to [-1,1\
         max_val = np.max(np.abs(sampled_audios))
         if max_val > 0:
             sampled_audios = sampled_audios / max_val
-
         return sampled_audios.astype(np.float32), None
     
-
 
     def on_audio_received(self, audio_data: AudioData, record: AudioDataRecord):
         self.audio, self.timestamp = audio_data.data, record.capture_timestamps_ns          
