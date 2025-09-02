@@ -203,7 +203,5 @@ data/*
 # Aber NICHT die Dateien direkt in data/
 !data/*.*
 !data/vrs
-!data/experiments
-!data/*.txt
 src/test.py
 src/best.pt
