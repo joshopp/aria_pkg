@@ -13,6 +13,15 @@ This library is one of three components in a complete multimodal manipulation sy
 - Object detection and visual feature matching with the robotic arm
 - Integration with LLM and manipulation components
 
+## Requirements
+
+- Ubuntu 22+
+- Python 3.8+
+- Project Aria glasses
+- SuperGlue installation (https://github.com/magicleap/SuperGluePretrainedNetwork)
+- YOLO model file (`best.pt`)
+- Additional dependencies listed in `requirements.txt`
+  
 ## Installation
 
 1. Clone the repository:
@@ -24,25 +33,13 @@ cd aria_pkg
 ```bash
 pip install -r requirements.txt
 ```
-
 3. Update SocialEye (eye tracking) as submodule:
 ```bash
-cd src
 git submodule update --init --recursive
 ```
-
 4. Download required models:
    - Place YOLO mask model `best.pt` in `src/` directory
    - Configure SuperGlue path (see Configuration section)
-
-## Requirements
-
-- Ubuntu 22+
-- Python 3.8+
-- Project Aria glasses
-- SuperGlue installation (https://github.com/magicleap/SuperGluePretrainedNetwork)
-- YOLO model file (`best.pt`)
-- Additional dependencies listed in `requirements.txt`
 
 
 **Note**: AV and torchvision compatibility issues may occur - remove AV package if needed:
@@ -71,17 +68,17 @@ Use the voice command pattern:
 
 **Example**: "START grab this yellow brick FINISH"
 
-### 5. Exit
-Press `q` or `ESC` to quit the interaction loop
+### 4. Exit
+If you want to quit the interaction loop, press `q` or `ESC`
 
 
 ## Configuration
 
 ### Network Setup
-For WiFi streaming, update firewall settings when running the interaction:
+For WiFi streaming, pass additional arguments and update firewall settings:
 ```python
-# Run the pipeline like this sllow incoming UDP connections
-python3 start_interaction --update_iptables
+# Run the pipeline like this allow incoming UDP connections
+python3 start_interaction -- interface wifi --update_iptables --device-ip your_device_ip
 ```
 
 ### Feature Matching (`feature_matching.py`)
