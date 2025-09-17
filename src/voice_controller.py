@@ -50,7 +50,8 @@ def combine_written_to_string(csv_file):
 
 
 def stream_audio():
-    filepath = os.path.dirname(os.path.abspath(__file__))
+    srcpath = os.path.dirname(os.path.abspath(__file__))
+    filepath = srcpath[:-4]  # Adjust path to project root
     csv_folder = os.path.join(filepath, "data/audio")
     model = "small.en"
 

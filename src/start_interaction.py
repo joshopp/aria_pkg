@@ -77,5 +77,5 @@ def main():
     aria.stream_end(device)
 
 if __name__ == "__main__":
-    with TerminalRawMode:
+    with TerminalRawMode():
         main()

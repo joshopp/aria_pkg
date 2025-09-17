@@ -98,7 +98,8 @@ def control_command_listener():
             
 
 def stream_image():
-    filepath = os.path.dirname(os.path.abspath(__file__))
+    srcpath = os.path.dirname(os.path.abspath(__file__))
+    filepath = srcpath[:-4]  # Adjust path to project root
     save_path = os.path.join(filepath, "data")
     
     camera_id_map = {2: "rgbcam", 3: "eyetrack"}

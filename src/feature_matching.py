@@ -112,7 +112,7 @@ def calculate_matching_points_in_box(mkpts1, boxes):
 
 def get_robo_img_bbox(context, maskModel, ip):
     socket = context.socket(zmq.REQ)
-    socket.connect(ip, ":5560")
+    socket.connect(ip + ":5560")
     print("ZMQ socket connected to Panda3 PC")
 
     # request image from IntelRealSense camera (roboter)
@@ -153,9 +153,9 @@ def get_aria_img_bbox(context, maskModel, filepath, ip):
     socket.bind("tcp://*:5557")
     print("ZMQ socket bound to port 5557")
 
-    et_csv_file_path = os.paths.join(filepath, "eyetracking/general_eye_gaze.csv")
-    rgb_csv_file_path = os.paths.join(filepath, "rgbcam/data.csv")
-    rgb_path = os.paths.join(filepath, "undistorted_imgs/")
+    et_csv_file_path = os.path.join(filepath, "eyetracking/general_eye_gaze.csv")
+    rgb_csv_file_path = os.path.join(filepath, "rgbcam/data.csv")
+    rgb_path = os.path.join(filepath, "undistorted_imgs/")
 
     # receive tool call from voice_controller
     print("Waiting for message from voice_controller script...\n")
@@ -318,7 +318,7 @@ def publish_bbox(context, tool_call, bbox, image_shape, ip, grab=False):
             }
 
     socket = context.socket(zmq.REQ)
-    socket.connect(ip, ":5559")
+    socket.connect(ip + ":5559")
     print("ZMQ socket connected to Panda3 PC")
     
     # distinguish between greb_brick tool call (append coords) and others
@@ -342,11 +342,12 @@ def publish_bbox(context, tool_call, bbox, image_shape, ip, grab=False):
 
 
 def match_features():
-    filepath = os.path.dirname(os.path.abspath(__file__))
+    srcpath = os.path.dirname(os.path.abspath(__file__))
+    filepath = srcpath[:-4]  # Adjust path to project root
     data_path = os.path.join(filepath, "data")
     robot_pkg_ip = "tcp://10.159.6.33"
     context = zmq.Context()
-    maskModel = YOLO(os.path.join(filepath, "src/best.pt"))
+    maskModel = YOLO(os.path.join(srcpath, "best.pt"))
     
     # 1. Initialize SuperGlue
     print("Initializing SuperGlue")

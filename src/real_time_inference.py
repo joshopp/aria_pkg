@@ -14,17 +14,18 @@ from projectaria_tools.core.stream_id import StreamId
 
 def eyetracking_initialization(device):
     # short example provider to calibrate cameras 
-    filepath = os.path.dirname(os.path.abspath(__file__))
-    provider = data_provider.create_vrs_data_provider(os.path.join(filepath, "/data/init.vrs"))
-    
+    srcpath = os.path.dirname(os.path.abspath(__file__))
+    filepath = srcpath[:-4]  # Adjust path to project root
+    provider = data_provider.create_vrs_data_provider(os.path.join(filepath, "data/init.vrs"))
+
     # calibrate RGB camera
     rgb_stream_id = StreamId("214-1")
     rgb_stream_label = provider.get_label_from_stream_id(rgb_stream_id)
     device_calibration = provider.get_device_calibration()
     rgb_camera_calibration = device_calibration.get_camera_calib(rgb_stream_label)
-    model_checkpoint_path = os.path.join(filepath, "projectaria_eyetracking/projectaria_eyetracking/inference/model/pretrained_weights/social_eyes_uncertainty_v1/weights.pth")
-    model_config_path = os.path.join(filepath, "projectaria_eyetracking/projectaria_eyetracking/inference/model/pretrained_weights/social_eyes_uncertainty_v1/config.yaml")
-    inference_model = infer.EyeGazeInference(
+    model_checkpoint_path = os.path.join(srcpath, "projectaria_eyetracking/projectaria_eyetracking/inference/model/pretrained_weights/social_eyes_uncertainty_v1/weights.pth")
+    model_config_path = os.path.join(srcpath, "projectaria_eyetracking/projectaria_eyetracking/inference/model/pretrained_weights/social_eyes_uncertainty_v1/config.yaml")
+    inference_model = infer.EyeGazeInference( 
         model_checkpoint_path, model_config_path, device
     )
 

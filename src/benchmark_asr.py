@@ -177,7 +177,8 @@ def benchmark_whisper(filepath):
 
  
 def main():
-    filepath = os.path.dirname(os.path.abspath(__file__))
+    srcpath = os.path.dirname(os.path.abspath(__file__))
+    filepath = srcpath[:-4]  # Adjust path to project root
 
     args = parse_args()
 
